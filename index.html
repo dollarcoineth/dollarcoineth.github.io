@@ -111,11 +111,10 @@
         </div>
 	 
 		<button class="button" onclick="exchangeForNFT()">Own it NOW!</button>
-	  
-	  
-	
-
+	 
+	<div id="message-container"></div> 
     </div>
+	
 
     <script>
 			// Set the address and ABI of the DollarNFT contract
@@ -125,6 +124,8 @@
 		const spender = contractNFTAddress; // Update with the address to approve as spender
 		const amount = '1000'; // Update with the desired amount to approve
 		
+		// Get the message container element
+		const messageContainer = document.getElementById("message-container");
 		
 		    // Function to connect the wallet
          async function connectWallet() {
@@ -136,10 +137,10 @@
 				let accounts = await web3.eth.getAccounts();
 				owner = accounts[0];
 				console.log('Connected with wallet:',owner);
-                displayStatus('Connected with wallet: ' + web3.eth.defaultAccount);
+                displayStatus('Connected with wallet: ' + owner);
             } catch (error) {
                 console.error('Failed to connect with wallet:', error);
-                displayStatus('Failed to connect with wallet');
+                displayStatus('Failed to connect with wallet: ' + error);
             }
         }
 
@@ -147,9 +148,10 @@
         // Check if MetaMask is installed
         if (typeof window.ethereum !== 'undefined') {
             window.web3 = new Web3(window.ethereum);
-			console.error('ethereum connected' + window.web3);
+			console.log('ethereum connected' + window.web3);
         } else {
             console.error('Please install MetaMask to use this application.');
+			 displayStatus('Please install MetaMask to use this application.' );
         }
 
         
@@ -157,31 +159,17 @@
         const DollarContract = new web3.eth.Contract(DollarABI, contractAddress);
 		 const DollarNFTContract = new web3.eth.Contract(DollarNFTABI, contractNFTAddress);
 		
-		async function getBalance() {
-            
-            try {
-                const result = await DollarContract.methods.balanceOf(owner);
-                console.log('balance successful:', result);
-				
-				DollarContract.methods.balanceOf(owner).call().then(function (balance) {
-				console.log('here is balance - ' + balance);
-				})
-                
-            } catch (error) {
-                console.error('Approval failed:', error);
-               
-            }
-        }
-		
 		async function setApprove() {
             
             try {
-                DollarContract.methods.approve(spender, amount).send({ from: owner }, async function (error, transactonHash) {
-					console.log('approve hash -' + transactonHash);
+                DollarContract.methods.approve(spender, amount).send({ from: owner }, async function (error, transactionHash) {
+					console.log('approve hash -' + transactionHash);
+					//displayStatus('Approval succeeded: ' + transactionHash );
 				})
 							
             } catch (error) {
                 console.error('Approval failed:', error);
+				displayStatus('Approval failed: ' +  error);
                
             }
         }
@@ -195,15 +183,30 @@
 			
 			const tokenText = document.getElementById('tokenText').value;
             try {
-                DollarNFTContract.methods.exchangeForNFT(tokenText).send({ from: owner }, async function (error, transactonHash) {
-					console.log('exchange hash -' + transactonHash);
+                DollarNFTContract.methods.exchangeForNFT(tokenText).send({ from: owner }, async function (error, transactionHash) {
+					console.log('exchange hash -' + transactionHash);
+					//displayStatus('NFT minting succeeded: ' + transactionHash );
 				})
                 
             } catch (error) {
-                console.error('NFT exchange failed:', error);
+                console.error('NFT minting failed:', error);
+				displayStatus('NFT minting failed: ' + error );
                
             }
         }
+		
+		// Function to display a status message
+		function displayStatus(message) {
+		  // Clear previous messages
+		  messageContainer.innerHTML = "";
+
+		  // Create a new paragraph element for the message
+		  const statusMessage = document.createElement("p");
+		  statusMessage.textContent = message;
+
+		  // Append the message to the container
+		  messageContainer.appendChild(statusMessage);
+		}
 		
     </script>
 	
