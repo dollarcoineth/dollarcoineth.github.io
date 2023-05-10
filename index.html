@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NFT Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.4.0/dist/web3.min.js"></script>
+    <script src="./DollarABI.js"></script>
+	<script src="./DollarNFTABI.js"></script>
+</head>
+<body>
+    <h1>NFT Generator</h1>
+
+    <div id="status"></div>
+
+    <h2>Connect to MetaMask Wallet</h2>
+    <button onclick="connectWallet()">Connect Wallet 2</button>
+	
+	 <h2>Approve</h2>
+    <button onclick="setApprove()">Set Approve</button>
+	
+    <h2>Exchange DOLLAR for NFT</h2>
+	<input type="string" id="tokenText" placeholder="Enter Token Text">
+      <button onclick="exchangeForNFT()">Exchange for NFT</button>
+
+   
+
+    <script>
+			// Set the address and ABI of the DollarNFT contract
+        const contractAddress = '0x19B57992DfE499669ea202f8909BFd5C081A0020'; // Update with the deployed Dollar contract address
+		//address of Dollar token contract
+		const contractNFTAddress = '0xd911eb0c0a18527cf0e6693dcc7ec6c71cd8316c' ; // Update with the deployed Dollar NFT contract address
+		const spender = contractNFTAddress; // Update with the address to approve as spender
+		const amount = '1000'; // Update with the desired amount to approve
+		
+		
+		    // Function to connect the wallet
+         async function connectWallet() {
+            try {
+                // Request access to the user's MetaMask accounts
+                await window.ethereum.enable();
+				
+				// web3.eth.getAccounts().then(e => let owner=e[0]; console.log('Connected with wallet:',owner));
+				let accounts = await web3.eth.getAccounts();
+				owner = accounts[0];
+				console.log('Connected with wallet:',owner);
+                displayStatus('Connected with wallet: ' + web3.eth.defaultAccount);
+            } catch (error) {
+                console.error('Failed to connect with wallet:', error);
+                displayStatus('Failed to connect with wallet');
+            }
+        }
+
+   		
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            window.web3 = new Web3(window.ethereum);
+			console.error('ethereum connected' + window.web3);
+        } else {
+            console.error('Please install MetaMask to use this application.');
+        }
+
+        
+        // Create an instance of the DollarNFT contract
+        const DollarContract = new web3.eth.Contract(DollarABI, contractAddress);
+		 const DollarNFTContract = new web3.eth.Contract(DollarNFTABI, contractNFTAddress);
+		
+		async function getBalance() {
+            
+            try {
+                const result = await DollarContract.methods.balanceOf(owner);
+                console.log('balance successful:', result);
+				
+				DollarContract.methods.balanceOf(owner).call().then(function (balance) {
+				console.log('here is balance - ' + balance);
+				})
+                
+            } catch (error) {
+                console.error('Approval failed:', error);
+               
+            }
+        }
+		
+		async function setApprove() {
+            
+            try {
+                DollarContract.methods.approve(spender, amount).send({ from: owner }, async function (error, transactonHash) {
+					console.log('approve hash -' + transactonHash);
+				})
+							
+            } catch (error) {
+                console.error('Approval failed:', error);
+               
+            }
+        }
+
+		
+		
+
+        // Function to exchange DOLLAR for NFT
+        async function exchangeForNFT() {
+			//call ChatGPT here to generate NFT image
+			
+			const tokenText = document.getElementById('tokenText').value;
+            try {
+                DollarNFTContract.methods.exchangeForNFT(tokenText).send({ from: owner }, async function (error, transactonHash) {
+					console.log('exchange hash -' + transactonHash);
+				})
+                
+            } catch (error) {
+                console.error('NFT exchange failed:', error);
+               
+            }
+        }
+		
+    </script>
+	
+</body>	
+       
