@@ -2,213 +2,47 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>NFT Collection</title>
-	<style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url("dollar_background.png");
-            background-size: 33%;   /* cover is fullscreen */
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #4caf50; /* #fff*/
-            text-align: center;
-            margin-top: 30px;
-			font-size: 32px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .status {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-      .button {
-        display: inline-block;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        color: #fff;
-        background-color: #4caf50; /* Green color */
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .button:hover {
-        background-color: #45a049; /* Darker green on hover */
-    }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .input-group input[type="number"] {
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-		
-		.input-group input[type="string"] {
-        padding: 10px;
-        width: 100%;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-sizing: border-box; /* Add this line to include padding and border in the width calculation */
-		}
-
-        .nft-image {
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 5px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   
 	
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.4.0/dist/web3.min.js"></script>
-    <script src="./DollarABI.js"></script>
-	<script src="./DollarNFTABI.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>DOLLAR Coin</title>
 </head>
 <body>
-    <h1>DOLLAR NFT Collection</h1>
-
-    <div class="container">
-        <div class="status" id="status"></div>
-
-        <h2>1. Connect to MetaMask Wallet</h2>
-        <button class="button" onclick="connectWallet()">Connect Wallet</button>
-		
-	
-	<h2>2. Each NFT is priced at 1000 DOLLARS</h2>
-        <button class="button" onclick="setApprove()">Approve Price</button>
-	
-    <h2>3. Collect NFT</h2>
-	<div class="input-group">
-            <label for="amount">What makes your NFT unique?</label>
-          <input type="string" id="tokenText" placeholder="Enter here...">
-        </div>
-	 
-		<button class="button" onclick="exchangeForNFT()">Own it NOW!</button>
-	 
-	<div id="message-container"></div> 
-    </div>
-	
-
-    <script>
-			// Set the address and ABI of the DollarNFT contract
-        const contractAddress = '0x19B57992DfE499669ea202f8909BFd5C081A0020'; // Update with the deployed Dollar contract address
-		//address of Dollar token contract
-		const contractNFTAddress = '0xd911eb0c0a18527cf0e6693dcc7ec6c71cd8316c' ; // Update with the deployed Dollar NFT contract address
-		const spender = contractNFTAddress; // Update with the address to approve as spender
-		const amount = '1000'; // Update with the desired amount to approve
-		
-		// Get the message container element
-		const messageContainer = document.getElementById("message-container");
-		
-		    // Function to connect the wallet
-         async function connectWallet() {
-            try {
-                // Request access to the user's MetaMask accounts
-                await window.ethereum.enable();
-				
-				// web3.eth.getAccounts().then(e => let owner=e[0]; console.log('Connected with wallet:',owner));
-				let accounts = await web3.eth.getAccounts();
-				owner = accounts[0];
-				console.log('Connected with wallet:',owner);
-                displayStatus('Connected with wallet: ' + owner);
-            } catch (error) {
-                console.error('Failed to connect with wallet:', error);
-                displayStatus('Failed to connect with wallet: ' + error);
-            }
-        }
-
-   		
-        // Check if MetaMask is installed
-        if (typeof window.ethereum !== 'undefined') {
-            window.web3 = new Web3(window.ethereum);
-			console.log('ethereum connected' + window.web3);
-        } else {
-            console.error('Please install MetaMask to use this application.');
-			 displayStatus('Please install MetaMask to use this application.' );
-        }
-
-        
-        // Create an instance of the DollarNFT contract
-        const DollarContract = new web3.eth.Contract(DollarABI, contractAddress);
-		 const DollarNFTContract = new web3.eth.Contract(DollarNFTABI, contractNFTAddress);
-		
-		async function setApprove() {
-            
-            try {
-                DollarContract.methods.approve(spender, amount).send({ from: owner }, async function (error, transactionHash) {
-					console.log('approve hash -' + transactionHash);
-					//displayStatus('Approval succeeded: ' + transactionHash );
-				})
-							
-            } catch (error) {
-                console.error('Approval failed:', error);
-				displayStatus('Approval failed: ' +  error);
-               
-            }
-        }
-
-		
-		
-
-        // Function to exchange DOLLAR for NFT
-        async function exchangeForNFT() {
-			//call ChatGPT here to generate NFT image
+    <div class="grid-2">
+        <div class="section-1">
+            <i class="fas fa-code fa-5x white"></i>
+            <h1>&#128178 DOLLAR Coin</h1>
+			<h2>Bridging the Virtual and Real World</h2>
 			
-			const tokenText = document.getElementById('tokenText').value;
-            try {
-                DollarNFTContract.methods.exchangeForNFT(tokenText).send({ from: owner }, async function (error, transactionHash) {
-					console.log('exchange hash -' + transactionHash);
-					//displayStatus('NFT minting succeeded: ' + transactionHash );
-				})
-                
-            } catch (error) {
-                console.error('NFT minting failed:', error);
-				displayStatus('NFT minting failed: ' + error );
-               
-            }
-        }
-		
-		// Function to display a status message
-		function displayStatus(message) {
-		  // Clear previous messages
-		  messageContainer.innerHTML = "";
+           
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-github"></i></a>
+        </div>
+        <div class="section-2">
+			<h2>About Me</h2>
+            <p>Somehow I was brought to life through the collaboration of ChatGPT and a community of crypto learners. It took 3 days from scratch to learn and build me up from basic of Ethereum, Solidity, Remix and non-technical stuff i.e. website design, marketing.</p>
+            <h2>My Dream</h2>
+            <p>As my name is DOLLAR, I just wonder if someday people will treat me as same as many of my dollar sibblings around the world. I strive to break the barriers that separate digital currencies from the physical world, making myself not just a virtual coin, but a real and impactful asset in people's lives.</p>
+            <h2>Roadmap</h2>
+            <p>Q2 2023: Here I come to the world.</p>
+			<p>Q2 2023: My baby - NFT Minting App will be born very soon.</p>
+			<p>Q3 2023: According to Grandmaster ChatGPT, low-hanging fruit utilities to consider such as gamifications.</p>
+			 <p>Beyond that: A bit tired, need more help from communities.</p>
+			
+			
 
-		  // Create a new paragraph element for the message
-		  const statusMessage = document.createElement("p");
-		  statusMessage.textContent = message;
-
-		  // Append the message to the container
-		  messageContainer.appendChild(statusMessage);
-		}
+            <h2>5 minutes about my baby</h2>
 		
-    </script>
-	
-</body>	
-       
+            <p><a  href="https://dollarcoineth.github.io/NFT.html">Own.Your.Unique.NFT.In.Ethereum.Universe</a></p>
+			
+           
+            <h2>Where to find Me?</h2>
+            <p><a href="https://dollarcoineth.github.io">Website</a></p>
+			<p><a href="https://twitter.com/dollarcoin_eth">Twitter</a></p>
+			<p><a href="https://github.com/dollarcoineth/dollarcoineth.github.io">GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>
